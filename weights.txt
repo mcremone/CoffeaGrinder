@@ -1,0 +1,19 @@
+
+
+
+#sf_ewkV
+#
+
+	#process kz
+	sf_ewk = valueAt(,h1Corrs[cZEWK] = new THCorr1((TH1D*)fKFactor->Get("EWKcorr/Z"));,event.genParticles.bound(gen.pt(),genBosonPtMin,genBosonPtMax);)
+	h1Corrs[cZEWK]->GetHist()->Divide(h1Corrs[cZNLO]->GetHist()); 
+	#process kw
+	sf_ewkV = valueAt(corrDir,h1Corrs[cWEWK] = new THCorr1((TH1D*)fKFactor->Get("EWKcorr/W"));,events.genParticles.bound(gen.pt(),genBosonPtMin,genBosonPtMax);)
+	h1Corrs[cWEWK]->GetHist()->Divide(h1Corrs[cWNLO]->GetHist());
+	#process ka
+	sf_ewkV = valueAt(corrDict,h1Corrs[cAEWK] = new THCorr1((TH1D*)fKFactor->Get("EWKcorr/photon"));,event.genparticles.bound(gen.pt(),genBosonPtMin,genBosonPtMax);)
+	h1Corrs[cAEWK]->GetHist()->Divide(h1Corrs[cANLO]->GetHist());
+	
+#if ((abspdgid == 12 || abspdgid == 14 || abspdgid == 16) && part.finalState==1)
+
+	#process kz 
