@@ -14,6 +14,31 @@
 	sf_ewkV = valueAt(corrDict,h1Corrs[cAEWK] = new THCorr1((TH1D*)fKFactor->Get("EWKcorr/photon"));,event.genparticles.bound(gen.pt(),genBosonPtMin,genBosonPtMax);)
 	h1Corrs[cAEWK]->GetHist()->Divide(h1Corrs[cANLO]->GetHist());
 	
-#if ((abspdgid == 12 || abspdgid == 14 || abspdgid == 16) && part.finalState==1)
+#(when generated boson was not found)
 
-	#process kz 
+	#process kz same as before but  gt->genBosonPt = bound(vpt.Pt(),genBosonPtMin,genBosonPtMax);
+        #process kw same as before but gt->genBosonPt = bound(vpt.Pt(),genBosonPtMin,genBosonPtMax);
+
+
+#sf_qcdV
+gt->genBosonPt = gt->genBosonPt = bound(gen.pt(),genBosonPtMin,genBosonPtMax);
+	#process kz
+	sf_qcdV = valueAt(corrDict,h1Corrs[cWNLO] = new THCorr1((TH1D*)fKFactor->Get("WJets_012j_NLO/nominal")); ,gt->genBosonPt)
+
+#sf_metTrig
+	sf_metTrig = valueAt(corrDict,look below, module of the sum of muon momentum vectors)
+        OpenCorrection(cTrigMET,dirPath+"moriond17/metTriggerEfficiency_recoil_monojet_TH1F.root",
+                 "hden_monojet_recoil_clone_passed",1);
+
+#sf_pho
+	sf_pho = valueAT(corrDict,look below,event.photons eta and pt)
+	OpenCorrection(cPho,dirPath+"moriond17/scalefactors_80x_medium_photon_37ifb.root",
+                 "EGamma_SF2D",2);
+#sf_phoTrig
+	if simplephoton -> if number of loose photons = 1, pt = that photon pt
+	if complicated photon -> pt is the momentum of photon with greates momentum
+	sf_phoTrig = valueAt(corrDict, below, event.photon.pt)
+	OpenCorrection(cTrigPho,dirPath+"moriond17/photonTriggerEfficiency_photon_TH1F.root",
+                 "hden_photonpt_clone_passed",1);
+
+	
