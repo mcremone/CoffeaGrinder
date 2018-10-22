@@ -61,6 +61,50 @@ for i in range(0, int(np.minimum(2,len(leptons)))):
             sf_lepID = np.append(sf_lepID,sfLepID) 
 	    sf_lepIso = np.append(sf_lepID,sfLepIso)
 	    sf_lepID = np.append(sf_lepTrack,sfLepTrack)
+# *******************************************************************************************************************************************************************************************
+
+
+# loop over gen particles
+
+	# if (analysis->processType==kZ)
+		# if (analysis->vbf)
+		gt->sf_ewkV = GetCorr(cZEWK,gt->genBosonPt);
+		valueAt(corrDict,"kfactor_24bins_EWKcorr_Z",)
+		# else
+		valueAt(corrDict,"kfactors_EWKcorr_Z",)
+
+		h1Corrs[cZEWK]->GetHist()->Divide(h1Corrs[cZNLO]->GetHist());  # ZJets_012j_NLO_nominal
+		h1Corrs[cZNLO]->GetHist()->Divide(hZLO);
+		TH1D *hZLO    = (TH1D*)fKFactor->Get("ZJets_LO/inv_pt");
+	# if (analysis->processType==kW)
+		# if vbf
+		valueAt(corrDict,"kfactor_24bins_EWKcorr_W",)
+		# else
+		valueAt(corrDict,"kfactors_EWKcorr_W",)
+
+		h1Corrs[cWEWK]->GetHist()->Divide(h1Corrs[cWNLO]->GetHist());  # WJets_012j_NLO_nominal
+		h1Corrs[cWNLO]->GetHist()->Divide(hWLO); 
+		TH1D *hWLO    = (TH1D*)fKFactor->Get("WJets_LO/inv_pt");
+	# if (analysis->processType==kA) 
+		# (gen.pt() > gt->trueGenBosonPt) 
+		#if vbf
+			valueAt(corrDict,"kfactor_24bins_EWKcorr_photon",)
+		# else
+			valueAt(corrDict,"kfactors_EWKcorr_photon",)
+
+		 h1Corrs[cAEWK]->GetHist()->Divide(h1Corrs[cANLO]->GetHist());  # "GJets_1j_NLO/nominal_G"
+		 h1Corrs[cANLO]->GetHist()->Divide(hALO);
+		TH1D *hALO    = (TH1D*)fKFactor->Get("GJets_LO/inv_pt_G");
+	# cases where no boson was found
+	# if (analysis->processType==kZ)
+		same as above
+	# else if (analysis->processType==kW) 
+		same as above
+
+
+
+
+
 
 
 
