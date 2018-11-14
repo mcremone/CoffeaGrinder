@@ -11,8 +11,8 @@ class denselookup(object):
             self.__dimension = len(dims)        
         if self.__dimension == 0:
             raise Exception('Could not define dimension for {}'.format(whattype))
-        self.__axes = (deepcopy(dims))
-        self.__values = deepcopy(values) # we keep a flatted array here so we can do quick searches
+        self.__axes = deepcopy(dims)
+        self.__values = deepcopy(values)
         self.__type = type(self.__values)
         
     def __call__(self,*args):        
