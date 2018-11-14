@@ -1,8 +1,5 @@
-from histbook import Hist,beside, groupby, below
-from histbook import bin,split
-import re
 import uproot
-import numpy
+from evaluator import evaluator
 
 TH1D = "<class 'uproot.rootio.TH1D'>"
 TH2D = "<class 'uproot.rootio.TH2D'>"
@@ -41,7 +38,7 @@ class extractor(object):
         self.__filecache = {}
         self.__finalized = False
     
-    def add_weight(self,local_name,weights):
+    def add_weight_set(self,local_name,weights):
         if self.__finalized: 
             raise Exception('extractor is finalized cannot add new weights!')
         if local_name in self.__names.keys():
@@ -49,7 +46,7 @@ class extractor(object):
         self.__names[local_name] = len(self.__weights)
         self.__weights.append(weights)
     
-    def add_weights(self,weightsdescs):
+    def add_weight_sets(self,weightsdescs):
         # expect file to be formatted <local name> <name> <weights file>
         # allow * * <file> and <prefix> * <file> to do easy imports of whole file
         for weightdesc in weightsdescs:
@@ -62,12 +59,12 @@ class extractor(object):
                 weights = self.__filecache[file]
                 for key, value in weights.iteritems():
                     if local_name == '*':
-                        self.add_weight(key,value)
+                        self.add_weight_set(key,value)
                     else:
-                        self.add_weight(local_name+key,value)
+                        self.add_weight_set(local_name+key,value)
             else:
                 weights = self.extract_from_file(file,name)
-                self.add_weight(local_name,weights)
+                self.add_weight_set(local_name,weights)
     
     def import_file(self,file):
         if file not in self.__filecache.keys():
@@ -80,11 +77,11 @@ class extractor(object):
             raise Exception('Weights named "{}" not in {}!'.format(name,file))        
         return weights[name]
           
-    def finalize():
+    def finalize(self):
         if self.__finalized: 
             raise Exception('extractor is already finalized!')
         del self.__filecache
         self.__finalized = True
     
-    def weights_list(self):
-        pass
+    def make_evaluator(self):
+        return evaluator(self.__names,self.__weights)
