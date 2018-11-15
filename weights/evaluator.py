@@ -18,11 +18,13 @@ class denselookup(object):
     def __call__(self,*args):        
         indices = []
         if self.__dimension == 1:
-            indices.append(np.searchsorted(self.__axes, args[0], side='right')-1)
+            indices.append(np.maximum(np.minimum(np.searchsorted(self.__axes, args[0], side='right')-1,self.__values.shape[0]-1),0))
         else:
             for dim in xrange(self.__dimension):
-                indices.append(np.searchsorted(self.__axes[dim], args[dim], side='right')-1)
+                print self.__axes[dim], self.__values.shape
+                indices.append(np.maximum(np.minimum(np.searchsorted(self.__axes[dim], args[dim], side='right')-1,self.__values.shape[len(self.__axes)-dim-1]-1),0))
         indices.reverse()
+        print tuple(indices)
         return self.__values[tuple(indices)]
 
 class evaluator(object):
