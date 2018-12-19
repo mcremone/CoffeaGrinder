@@ -3,9 +3,6 @@ import numpy as np
 import fnal_column_analysis_tools
 from fnal_column_analysis_tools.analysis_objects import JaggedCandidateArray
 
-def dummySF(eta, pt):
-	return (eta+pt)/(eta*pt)
-
 f = "nano_5.root"
 
 electron_columns = {'pt':'Electron_pt','eta':'Electron_eta','phi':'Electron_phi','mass':'Electron_mass','iso':'Electron_pfRelIso03_all','dxy':'Electron_dxy','dz':'Electron_dz','id':'Electron_mvaSpring16GP_WP90'}
@@ -21,7 +18,7 @@ for arrays in uproot.iterate(f,'Events',columns,entrysteps=50000):
         muons = JaggedCandidateArray.candidatesfromcounts(arrays[muon_columns['pt']].counts, **{key:arrays[val].content for key,val in muon_columns.items()})
 
 
-loose_e_selection = (electrons.pt>7)*(abs(electrons.eta)<2.4)*(abs(electrons["dxy"])<0.05)*(abs(electrons["dz"])<0.2)*(electrons["pfRelIso03_all"]<0.4)*(electrons["mvaSpring16GP_WP90"])
+loose_e_selection = (electrons.pt>7)*(abs(electrons.eta)<2.4)*(abs(electrons.dxy)<0.05)*(abs(electrons.dz)<0.2)*(electrons.iso<0.4)*(electrons.id)
 loose_electrons = electrons[loose_e_selection]
 e_counts = loose_electrons.counts
 e_sfTrigg = np.ones(loose_electrons.size)
