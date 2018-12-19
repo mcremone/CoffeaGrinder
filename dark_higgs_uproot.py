@@ -9,32 +9,16 @@ def dummySF(eta, pt):
 f = uproot.open("nano_5.root")
 e = f["Events"]
 
-electrons_pt = np.concatenate(e.array("Electron_pt"))
-electrons_eta = np.concatenate(e.array("Electron_eta"))
-electrons_phi = np.concatenate(e.array("Electron_phi"))
-electrons_mass = np.concatenate(e.array("Electron_mass"))
-e_counts = e.array("nElectron")
+electron_columns = {'pt':'Electron_pt','eta':'Electron_eta','phi':'Electron_phi','mass':'Electron_mass'}
 
-muons_pt = np.concatenate(e.array("Muon_pt"))
-muons_eta = np.concatenate(e.array("Muon_eta"))
-muons_phi = np.concatenate(e.array("Muon_phi"))
-muons_mass = np.concatenate( e.array("Muon_mass"))
-m_counts = e.array("nMuon")
+muon_columns = {'pt':'Muon_pt','eta':'Muon_eta','phi':'Muon_phi','mass':'Muon_mass'}
 
-muons = JaggedCandidateArray.candidatesfromcounts(m_counts,pt = muons_pt, eta=muons_eta, phi=muons_phi, mass=muons_mass)
-muons.add_attributes(pfRelIso04_all=np.concatenate(e.array("Muon_pfRelIso04_all")),
-					 dxy=np.concatenate(e.array("Muon_dxy")),
-					 dz=np.concatenate(e.array("Muon_dz"))
-					)
+electrons = JaggedCandidateArray.candidatesfromcounts(arrays[electron_columns['pt']].counts, **{key:arrays[val].content for key,val in electron_columns.items()})
+muons = JaggedCandidateArray.candidatesfromcounts(arrays[muon_columns['pt']].counts, **{key:arrays[val].content for key,val in muon_columns.items()})
 
-electrons = JaggedCandidateArray.candidatesfromcounts(e_counts,pt = electrons_pt, eta=electrons_eta, phi=electrons_phi, mass=electrons_mass)
-electrons.add_attributes(pfRelIso03_all=np.concatenate(e.array("Electron_pfRelIso03_all")),
-						 dxy=np.concatenate(e.array("Electron_dxy")),
-						 dz=np.concatenate(e.array("Electron_dz")),
-						 mvaSpring16GP_WP90=np.concatenate(e.array("Electron_mvaSpring16GP_WP90"))
-				    	)                                                                                                                                                                                                      
-
-#loose lepton selection
+electrons.add_attributes(iso=Electron_pfRelIso03_all,dxy=Electron_dxy,dz=Electron_dz,id=Electron_mvaSpring16GP_WP90)
+muons.add_attributes(iso=Muon_pfRelIso04_all,dxy=Muon_dxy,dz=Muon_dz)
+                                                                                                                                                                #loose lepton selection
 	#loose electron selection
 
 loose_e_selection = (electrons.pt>7)*(abs(electrons.eta)<2.4)*(abs(electrons["dxy"])<0.05)*(abs(electrons["dz"])<0.2)*(electrons["pfRelIso03_all"]<0.4)*(electrons["mvaSpring16GP_WP90"])
