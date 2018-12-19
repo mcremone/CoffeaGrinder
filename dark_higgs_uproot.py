@@ -3,6 +3,15 @@ import numpy as np
 import fnal_column_analysis_tools
 from fnal_column_analysis_tools.analysis_objects import JaggedCandidateArray
 
+
+extractor = fnal_column_analysis_tools.lookup_tools.extractor()
+extractor.add_weight_sets(['* * eleTrig.root'])
+extractor.finalize()
+
+evaluator = extractor.make_evaluator()
+
+
+
 f = "nano_5.root"
 
 met_trigger_paths = ["HLT_PFMET170_NoiseCleaned",
@@ -49,6 +58,7 @@ electron_columns = {'pt':'Electron_pt','eta':'Electron_eta','phi':'Electron_phi'
 
 muon_columns = {'pt':'Muon_pt','eta':'Muon_eta','phi':'Muon_phi','mass':'Muon_mass','iso':'Muon_pfRelIso04_all','dxy':'Muon_dxy','dz':'Muon_dz'}
 
+
 jet_columns = {'pt':'Jet_pt','eta':'Jet_eta','phi':'Jet_phi','mass':'Jet_mass','id':'Jet_jetId'}
 
 tau_columns = {'pt':'Tau_pt','eta':'Tau_eta','phi':'Tau_phi','mass':'Tau_mass','decayMode':'Tau_idDecayMode','decayModeNew':'Tau_idDecayModeNewDMs','id':'Tau_idMVAnewDM'}
@@ -56,6 +66,7 @@ tau_columns = {'pt':'Tau_pt','eta':'Tau_eta','phi':'Tau_phi','mass':'Tau_mass','
 photon_columns = {'pt':'Photon_pt','eta':'Photon_eta','phi':'Photon_phi','mass':'Photon_mass',}
 
 all_columns [electron_columns,muon_columns]
+
 columns = []
 for cols in all_columns: columns.extend(list(cols.values()))
 
@@ -88,10 +99,10 @@ loose_photons = photons[loose_photon_selection]
 
 e_counts = loose_electrons.counts
 e_sfTrigg = np.ones(loose_electrons.size)
-e_sfTrigg[e_counts>0] = 1 - dummySF(loose_electrons.eta[e_counts>0,0], loose_electrons.pt[e_counts > 0,0])
-e_sfTrigg[e_counts > 1] =  1- (1- dummySF(loose_electrons.eta[e_counts>1,0], loose_electrons.pt[e_counts > 1,0]))*(1- dummySF(loose_electrons.eta[e_counts>1,1], loose_electrons.pt[e_counts > 1,1]))
+e_sfTrigg[e_counts>0] = 1 - evaluator["hEffEtaPt"](loose_electrons.eta[e_counts>0,0], loose_electrons.pt[e_counts > 0,0])
+e_sfTrigg[e_counts > 1] =  1- (1- evaluator["hEffEtaPt"](loose_electrons.eta[e_counts>1,0], loose_electrons.pt[e_counts > 1,0]))*(1- evaluator["hEffEtaPt"](loose_electrons.eta[e_counts>1,1], loose_electrons.pt[e_counts > 1,1]))
 
-
+#print evaluator["hEffEtaPt"](loose_electrons.eta[e_counts>0,0], loose_electrons.pt[e_counts > 0,0])
 
 
 
