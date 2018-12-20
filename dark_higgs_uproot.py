@@ -5,7 +5,7 @@ from fnal_column_analysis_tools.analysis_objects import JaggedCandidateArray
 
 
 extractor = fnal_column_analysis_tools.lookup_tools.extractor()
-extractor.add_weight_sets(['* * eleTrig.root'])
+extractor.add_weight_sets(['* * eleTrig.root','* * muon_trig_Run2016BtoF.root'])
 extractor.finalize()
 
 evaluator = extractor.make_evaluator()
@@ -65,7 +65,7 @@ tau_columns = {'pt':'Tau_pt','eta':'Tau_eta','phi':'Tau_phi','mass':'Tau_mass','
 
 photon_columns = {'pt':'Photon_pt','eta':'Photon_eta','phi':'Photon_phi','mass':'Photon_mass',}
 
-all_columns [electron_columns,muon_columns]
+all_columns [electron_columns,muon_columns,jet_columns,tau_columns,photon_columns]
 
 columns = []
 for cols in all_columns: columns.extend(list(cols.values()))
@@ -95,12 +95,15 @@ loose_electrons = electrons[loose_electron_selection]
 loose_muons = muons[loose_muon_selection]
 loose_photons = photons[loose_photon_selection]
 
-
-
 e_counts = loose_electrons.counts
 e_sfTrigg = np.ones(loose_electrons.size)
 e_sfTrigg[e_counts>0] = 1 - evaluator["hEffEtaPt"](loose_electrons.eta[e_counts>0,0], loose_electrons.pt[e_counts > 0,0])
 e_sfTrigg[e_counts > 1] =  1- (1- evaluator["hEffEtaPt"](loose_electrons.eta[e_counts>1,0], loose_electrons.pt[e_counts > 1,0]))*(1- evaluator["hEffEtaPt"](loose_electrons.eta[e_counts>1,1], loose_electrons.pt[e_counts > 1,1]))
+
+m_counts = loose_muons.counts
+m_sfTrigg = np.ones(loose_muons.size)
+m_sfTrigg[m_counts>0] =  evaluator["IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/pt_abseta_DATA"](loose_muons.eta[m_counts>0,0], loose_muons.pt[m_counts > 0,0])
+m_sfTrigg[m_counts > 1] =  1- (1- evaluator["IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/pt_abseta_DATA"](loose_muons.eta[m_counts>1,0], loose_muons.pt[m_counts > 1,0]))*(1- evaluator["IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/pt_abseta_DATA"](loose_muons.eta[m_counts>1,1], loose_muons.pt[m_counts > 1,1]))
 
 #print evaluator["hEffEtaPt"](loose_electrons.eta[e_counts>0,0], loose_electrons.pt[e_counts > 0,0])
 
