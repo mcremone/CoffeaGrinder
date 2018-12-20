@@ -72,7 +72,7 @@ for cols in all_columns: columns.extend(list(cols.values()))
 
 for arrays in uproot.iterate(f,'Events',columns,entrysteps=50000):
 
-        triggers = JaggedCandidateArray.candidatesfromcounts(arrays[met_trigger_columns['HLT_PFMET170_NoiseCleaned']].counts, **{MET:np.prod([arrays[val].content for val in met_trigger_columns]),SingleEle:np.prod([arrays[val].content for val in singleelectron_trigger_columns]),SinglePhoton:np.prod([arrays[val].content for val in singlephoton_trigger_columns])}
+        triggers = JaggedCandidateArray.candidatesfromcounts(arrays[met_trigger_columns['HLT_PFMET170_NoiseCleaned']].counts, **{'MET':np.prod([arrays[val].content for val in met_trigger_columns]),'SingleEle':np.prod([arrays[val].content for val in singleelectron_trigger_columns]),'SinglePhoton':np.prod([arrays[val].content for val in singlephoton_trigger_columns])}
         
         electrons = JaggedCandidateArray.candidatesfromcounts(arrays[electron_columns['pt']].counts, **{key:arrays[val].content for key,val in electron_columns.items()})
                                                              
